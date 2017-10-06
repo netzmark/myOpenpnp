@@ -355,7 +355,7 @@ public class ReferenceNozzleTip extends AbstractNozzleTip {
         private CvPipeline pipeline = createDefaultPipeline();
 
         @Attribute(required = false)
-        private double angleIncrement = 15;
+        private double angleIncrement = 45;
         
         @Attribute(required = false)
         private boolean enabled;
@@ -380,14 +380,10 @@ public class ReferenceNozzleTip extends AbstractNozzleTip {
                 Location location = camera.getLocation();
                 location = location.derive(null, null, null, 0d);
                 MovableUtils.moveToLocationAtSafeZ(nozzle, location);
-                for (int i = 0; i < 3; i++) {
-                    // Locate the nozzle offsets.
-                    Location offset = findCircle();
-
-                    // Subtract the offsets and move to that position to center the nozzle.
-                    location = location.subtract(offset);
-                    nozzle.moveTo(location);
-                }
+                
+                // Center the nozzle over the camera to get our baseline location.
+                location = getNozzleCenter(nozzle, location);
+                
                 // This is our baseline location and should have the nozzle well centered over the
                 // camera.
                 Location startLocation = location;
@@ -397,9 +393,13 @@ public class ReferenceNozzleTip extends AbstractNozzleTip {
                 List<CalibrationOffset> offsets = new ArrayList<>();
                 for (double i = 0; i < 360; i += angleIncrement) {
                     location = startLocation.derive(null, null, null, i);
-                    nozzle.moveTo(location);
-                    Location offset = findCircle();
-                    offsets.add(new CalibrationOffset(offset, i));
+                    location = getNozzleCenter(nozzle, location);
+                    Location offset = startLocation.subtract(location);
+//                    System.out.println(i + " " + offset.getLinearDistanceTo(0, 0) + " " + offset);
+                    System.out.println(offset.getX() + "," + offset.getY());
+//                    offsets.add(new CalibrationOffset(offset, i));
+                    
+                    // TODO TODO TODO now how do we figure out where the center of rotation is?
                 }
 
                 // The nozzle tip is now calibrated and calibration.getCalibratedOffset() can be
@@ -411,6 +411,17 @@ public class ReferenceNozzleTip extends AbstractNozzleTip {
             finally {
                 calibrating = false;
             }
+        }
+        
+        private Location getNozzleCenter(Nozzle nozzle, Location location) throws Exception {
+            for (int i = 0; i < 4; i++) {
+                // Locate the nozzle offsets.
+                Location offset = findCircle();
+
+                location = location.subtract(offset);
+                nozzle.moveTo(location);
+            }
+            return location;
         }
 
         public Location getCalibratedOffset(double angle) {
@@ -467,6 +478,10 @@ public class ReferenceNozzleTip extends AbstractNozzleTip {
                 else {
                     throw new Exception("Unrecognized result " + result);
                 }
+            }
+            else if (result instanceof KeyPoint) {
+                KeyPoint keyPoint = (KeyPoint) result;
+                location = VisionUtils.getPixelCenterOffsets(camera, keyPoint.pt.x, keyPoint.pt.y);
             }
             else if (result instanceof RotatedRect) {
                 RotatedRect rect = (RotatedRect) result;
