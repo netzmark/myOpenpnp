@@ -37,6 +37,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.openpnp.ConfigurationListener;
@@ -98,6 +99,7 @@ public class ReferenceNozzleTipConfigurationWizard extends AbstractConfiguration
     private JScrollPane scrollPane;
     private JTable table;
     private PackagesTableModel tableModel;
+    private TableRowSorter<PackagesTableModel> tableSorter;
 
     private Set<org.openpnp.model.Package> compatiblePackages = new HashSet<>();
     private JLabel lblMiddleLocation_1;
@@ -162,6 +164,8 @@ public class ReferenceNozzleTipConfigurationWizard extends AbstractConfiguration
         panelPackageCompat.add(scrollPane, "2, 4, fill, default");
 
         table = new AutoSelectTextTable(tableModel = new PackagesTableModel());
+        tableSorter = new TableRowSorter<>(tableModel);	//added for table sorting
+        table.setRowSorter(tableSorter);				//added for table sorting
         scrollPane.setViewportView(table);
 
         panelChanger = new JPanel();

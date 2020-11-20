@@ -185,6 +185,17 @@ public class JobPlacementsPanel extends JPanel {
         tableModel = new PlacementsTableModel(configuration);
         tableSorter = new TableRowSorter<>(tableModel);
 
+        /**
+		JobPlacement Table sorting
+        */
+//        //sample coloumn 0 blockade
+//        tableSorter.setSortable(0, false);
+
+//        //every coloumns blockade
+//        for (int i = 0 ; i < tableSorter.getModel().getColumnCount() ; i++) {
+//        	tableSorter.setSortable(i, false);
+//        }
+
         table = new AutoSelectTextTable(tableModel);
         table.setRowSorter(tableSorter);
         table.getTableHeader().setDefaultRenderer(new MultisortTableHeaderCellRenderer());
