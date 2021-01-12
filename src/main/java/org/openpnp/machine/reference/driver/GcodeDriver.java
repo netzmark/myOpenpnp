@@ -30,6 +30,7 @@ import org.openpnp.machine.reference.ReferenceMachine;
 import org.openpnp.machine.reference.ReferenceNozzle;
 import org.openpnp.machine.reference.ReferenceNozzleTip;
 import org.openpnp.machine.reference.ReferencePasteDispenser;
+import org.openpnp.machine.reference.driver.GcodeDriver.CommandType;
 import org.openpnp.machine.reference.driver.wizards.GcodeDriverConsole;
 import org.openpnp.machine.reference.driver.wizards.GcodeDriverGcodes;
 import org.openpnp.machine.reference.driver.wizards.GcodeDriverSettings;
@@ -74,7 +75,9 @@ public class GcodeDriver extends AbstractReferenceDriver implements Named, Runna
         PLACE_COMMAND(true, "Id", "Name"),
         ACTUATE_BOOLEAN_COMMAND(true, "Id", "Name", "Index", "BooleanValue", "True", "False"),
         ACTUATE_DOUBLE_COMMAND(true, "Id", "Name", "Index", "DoubleValue", "IntegerValue"),
+        ACTUATE_STRING_COMMAND(true, "Id", "Name", "Index", "StringValue"),        
         ACTUATOR_READ_COMMAND(true, "Id", "Name", "Index"),
+        ACTUATOR_READ_WITH_DOUBLE_COMMAND(true, "Id", "Name", "Index", "DoubleValue", "IntegerValue"),
         ACTUATOR_READ_REGEX(true),
         PRE_DISPENSE_COMMAND(false, "DispenseTime"),
         DISPENSE_COMMAND(false, "DispenseTime"),
@@ -858,19 +861,45 @@ public class GcodeDriver extends AbstractReferenceDriver implements Named, Runna
             driver.actuate(actuator, value);
         }
     }
-    
+  
     @Override
-    public String actuatorRead(ReferenceActuator actuator) throws Exception {
-        String command = getCommand(actuator, CommandType.ACTUATOR_READ_COMMAND);
+    public void actuate(ReferenceActuator actuator, String value) throws Exception {
+        String command = getCommand(actuator, CommandType.ACTUATE_STRING_COMMAND);
+        command = substituteVariable(command, "Id", actuator.getId());
+        command = substituteVariable(command, "Name", actuator.getName());
+        command = substituteVariable(command, "Index", actuator.getIndex());
+        command = substituteVariable(command, "StringValue", value);
+        sendGcode(command);
+        
+        for (ReferenceDriver driver : subDrivers) {
+            driver.actuate(actuator, value);
+        }        
+    }    
+    
+    private String actuatorRead(ReferenceActuator actuator, Double parameter) throws Exception {
+        String command;
+        if (parameter == null) {
+          command = getCommand(actuator, CommandType.ACTUATOR_READ_COMMAND);
+        }
+        else {
+            command = getCommand(actuator, CommandType.ACTUATOR_READ_WITH_DOUBLE_COMMAND);
+        }        
+        
         String regex = getCommand(actuator, CommandType.ACTUATOR_READ_REGEX);
         if (command == null || regex == null) {
             // If the command or regex is null we'll query the subdrivers. The first
             // to respond with a non-null value wins.
             for (ReferenceDriver driver : subDrivers) {
-                String val = driver.actuatorRead(actuator);
-                if (val != null) {
-                    return val;
-                }
+            	String val;
+            	if (parameter == null) {
+            		val = driver.actuatorRead(actuator);
+            	}
+            	else {
+            		val = driver.actuatorRead(actuator, parameter);
+            	}
+            	if (val != null) {
+                  return val;
+            	}
             }
             // If none of the subdrivers returned a value there's nothing left to
             // do, so return null.
@@ -880,6 +909,10 @@ public class GcodeDriver extends AbstractReferenceDriver implements Named, Runna
         command = substituteVariable(command, "Id", actuator.getId());
         command = substituteVariable(command, "Name", actuator.getName());
         command = substituteVariable(command, "Index", actuator.getIndex());
+        if (parameter != null) {
+            command = substituteVariable(command, "DoubleValue", parameter);
+            command = substituteVariable(command, "IntegerValue", (int) parameter.doubleValue());
+        }
 
         List<String> responses = sendGcode(command);
 
@@ -898,10 +931,19 @@ public class GcodeDriver extends AbstractReferenceDriver implements Named, Runna
                 }
             }
         }
-
         return null;
     }
 
+    @Override
+    public String actuatorRead(ReferenceActuator actuator) throws Exception {
+        return actuatorRead(actuator, null); 
+    }
+
+    @Override
+    public String actuatorRead(ReferenceActuator actuator, double parameter) throws Exception {
+        return actuatorRead(actuator, (Double) parameter);
+    }
+    
     public synchronized void disconnect() {
         disconnectRequested = true;
         connected = false;
