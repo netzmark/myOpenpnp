@@ -428,6 +428,9 @@ public class ReferenceSlotAutoFeederConfigurationWizard
         addWrappedBinding(feeder, "retryCount", retryCountTf, "text", intConverter);
         addWrappedBinding(feeder, "alignRetryCount", alignRetryCountTf, "text", intConverter);
         addWrappedBinding(feeder, "pickRetryCount", pickRetryCountTf, "text", intConverter);
+        
+        addWrappedBinding(feeder, "autoSkipAlign", chckbxAutoSkipAlign, "selected");
+        addWrappedBinding(feeder, "autoSkipPick", chckbxAutoSkipPick, "selected");  
 
         /**
          * Note that we set up the bindings here differently than everywhere else. In most
@@ -503,8 +506,6 @@ public class ReferenceSlotAutoFeederConfigurationWizard
         ComponentDecorators.decorateWithAutoSelect(retryCountTf);
         ComponentDecorators.decorateWithAutoSelect(alignRetryCountTf);
         ComponentDecorators.decorateWithAutoSelect(pickRetryCountTf);
-        addWrappedBinding(feeder, "autoSkipAlign", chckbxAutoSkipAlign, "selected");
-        addWrappedBinding(feeder, "autoSkipPick", chckbxAutoSkipPick, "selected");        
         
         feederPartCb.addActionListener(e -> {
             notifyChange();
