@@ -42,7 +42,9 @@ public abstract class AbstractPnpJobProcessor extends AbstractJobProcessor
                 Configuration.get().getMachine().getDiscardLocation());
         // discard the part
         nozzle.place();
-        nozzle.moveToSafeZ();
+        nozzle.moveToSafeZ(); 
+        Thread.sleep(300); //delay before the vacuum_on
+        nozzle.actVacuumOn(); //TEST-VACUUM-CODE
         Thread.sleep(150); //to let vacuum grow if nozzle is not clean
         nozzle.isPartOffTest(); // to check at discard location if nozzle is clean
         
