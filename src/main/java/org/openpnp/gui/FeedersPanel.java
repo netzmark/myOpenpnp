@@ -439,7 +439,6 @@ public class FeedersPanel extends JPanel implements WizardContainer {
             UiUtils.submitUiMachineTask(() -> {
                 Feeder feeder = getSelection();
                 Nozzle nozzle = MainFrame.get().getMachineControls().getSelectedNozzle();
-
                 nozzle.moveToSafeZ();
                 feeder.feed(nozzle);
                 Location pickLocation = feeder.getPickLocation();
@@ -460,14 +459,15 @@ public class FeedersPanel extends JPanel implements WizardContainer {
             UiUtils.submitUiMachineTask(() -> {
                 Feeder feeder = getSelection();
                 Nozzle nozzle = MainFrame.get().getMachineControls().getSelectedNozzle();
-
                 nozzle.moveToSafeZ();
+                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
                 feeder.feed(nozzle);
                 Location pickLocation = feeder.getPickLocation();
                 MovableUtils.moveToLocationAtSafeZ(nozzle, pickLocation);
                 nozzle.pick(feeder.getPart());
                 nozzle.moveToSafeZ();
                 feeder.postPick(nozzle);
+                nozzle.isPartOnTest();//??? added to get this test after postPick actuation
             });
         }
     };

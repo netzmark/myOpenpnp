@@ -27,6 +27,7 @@ import org.openpnp.model.Location;
 import org.openpnp.model.Part;
 import org.openpnp.spi.Actuator;
 import org.openpnp.spi.Camera;
+import org.openpnp.spi.Feeder;
 import org.openpnp.spi.JobProcessor;
 import org.openpnp.spi.Machine;
 import org.openpnp.spi.NozzleTip;
@@ -71,9 +72,20 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
     private boolean limitRotation = true;
 
     protected ReferenceNozzleTip nozzleTip;
+    
+// TEST-VACUUM-CODE
+    public static Actuator actVacuum;
+    public void actVacuumOn() throws Exception {
+    	actVacuum = getHead().getMachine().getActuator(getId()+"_VAC");
+        if (actVacuum != null) {
+        	Logger.debug("Turning on the Vacuum");
+        	actVacuum.actuate(true);
+        }
+    }
+// TEST-VACUUM-CODE-END    
 
     Actuator actDown; // Marek change: machine is faster, but need program restart if name changes.
-    Actuator actVacuum; // Marek change: machine is faster, but need program restart if name changes.
+    //Actuator actVacuum; // Marek change: machine is faster, but need program restart if name changes.
     //public static Actuator topLight; // Marek change: machine is faster, but need program restart if name changes.
     
     public ReferenceNozzle() {
@@ -82,7 +94,7 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
             public void configurationLoaded(Configuration configuration) throws Exception {
                 nozzleTip = (ReferenceNozzleTip) nozzleTips.get(currentNozzleTipId);
                 actDown = getHead().getMachine().getActuator(getId()); // Marek change: actuator added to can control lower/raise Nozzle from RefferenceNozzle
-                actVacuum = getHead().getMachine().getActuator(getId()+"_VAC"); // Marek change: actuator added to can control vacuum on/off from RefferenceNozzle
+                //actVacuum = getHead().getMachine().getActuator(getId()+"_VAC"); // Marek change: actuator added to can control vacuum on/off from RefferenceNozzle
                 //topLight = getMachine().getActuator("DownCamLights"); // Marek change: actuator added to can control Light of Down Looking Camera from ReferencePnpJobProcessor
                 //topLight = getMachine().getActuatorByName("DownCamLights"); // Marek change: actuator added to can control Light of Down Looking Camera from ReferencePnpJobProcessor
             }
@@ -229,8 +241,8 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
         getDriver().pick(this);
         getMachine().fireMachineHeadActivity(head);
 
-        //actDown.actuate(true); //lowering nozzle before makePick. Removed because the system made it automatically before
-
+        //actDown.actuate(true); //lowering nozzle before makePick. Removed because the has system made it automatically before
+        
         Actuator actuator = getHead().getActuatorByName(vacuumSenseActuatorName);
 
         if (actuator != null) { 
@@ -257,15 +269,16 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
                 }
             };
 
-            if(actDown!=null) {
-                Logger.debug("{}.moveTo(Nozzle Up)", getId());
-                actDown.actuate(false); //rising nozzle immediately after the VacuumLevelPartOn value detected or full loop finished
-                Logger.debug("pickDwellTime after nozzle raising: {}ms", (getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds()));
-                Thread.sleep(this.getPickDwellMilliseconds()); //Artur wanted have it here
-            }
+            //removed because raising the nozzle is made with moveToSafeZ in PnpJobProcessor, FeedersPanel and PartPanel
+//            if(actDown!=null) {
+//                Logger.debug("{}.moveTo(Nozzle Up)", getId());
+//                actDown.actuate(false); //rising nozzle immediately after the VacuumLevelPartOn value detected or full loop finished
+//                Logger.debug("pickDwellTime after nozzle raising: {}ms", (getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds()));
+//                Thread.sleep(this.getPickDwellMilliseconds()); //Artur wanted have it here
+//            }
      
-     // Second vacuum check (after nozzle rising)       
-            isPartOnTest(); //it must be here to realize alarm message in case of manual feeding
+     // Second vacuum check (after nozzle rising) 
+            //isPartOnTest(); //moved to PnpJobProcessor, FeedersPanel and PartPanel
             
 /*
  * This section is commented in relation to added function in RefererencePnpJobProcessor to check isPartOn
@@ -360,14 +373,22 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
            };
     //vacuum sequence monitoring first loop ended
 
-            if(actDown!=null) {
-                Logger.debug("{}.moveTo(Nozzle Up)", getId());
-                actDown.actuate(false); //rising nozzle immediately after the VacuumLevelPartOff value detected or full loop finished
-                Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
-                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
-                actVacuum.actuate(true); //pumpON to check in later procedure (prePickTest) if the part has not stayed on nozzle UWAGA MOZE DO SKRYPTU
-            }
+               Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
+               Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
+    
+           
+//            if(actDown!=null) {
+//                Logger.debug("{}.moveTo(Nozzle Up)", getId());
+//                actDown.actuate(false); //rising nozzle immediately after the VacuumLevelPartOff value detected or full loop finished
+//                Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
+//                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
+//                //TEST-VACUUM-CODE
+//                //actVacuum.actuate(true); //pumpON to check in later procedure (prePickTest) if the part has not stayed on nozzle UWAGA MOZE DO SKRYPTU
+//                //actVacuumOn(); 
+//            }
 
+            
+            
     // Second vacuum check (after nozzle rising), single check is enough to confirm whether the part is not glued)
             /*
             vacuumLevel = Double.parseDouble(actuator.read());
@@ -388,13 +409,16 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
              */   
         }
         else {
-            if(actDown!=null) {
-                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
+            if(actDown != null) {
+//            	Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
+//                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
                 Logger.debug("{}.moveTo(Nozzle Up)", getId());
                 actDown.actuate(false);
-                Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
-                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
-                actVacuum.actuate(true); //pumpON to check in later procedure (prePickTest) if the part has not stayed on nozzle UWAGA MOZE DO SKRYPTU
+//                Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
+//                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
+                //TEST-VACUUM-CODE
+                //actVacuum.actuate(true); //pumpON to check in later procedure (prePickTest) if the part has not stayed on nozzle UWAGA MOZE DO SKRYPTU
+                //actVacuumOn();
              } 
         }
     }

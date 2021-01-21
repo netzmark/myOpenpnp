@@ -777,7 +777,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	                   feeder.getName(), placement.getId());
 	                   Logger.debug("Attempt Pick {} from {} with {}.",
 	                   new Object[] {part, feeder, nozzle});
-	
+	                   nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PumpON gcode)
 	          // Move to the pick location and check is Nozzle is clean
 	                   Logger.debug("move to the pick location");                  
 	                   //MovableUtils.moveToLocationAtSafeZ(nozzle, feeder.getPickLocation());
@@ -793,18 +793,21 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	          // Pick
 	                   fireTextStatus("[%s] Picking %s (%s) from feeder: %s.", fsm.getState(), part.getId(), placement.getId(), feeder.getName());
 	                   nozzle.pick(part);
-	          
-	          // Retract and check if Part is On
-	                   nozzle.moveToSafeZ();
-	                   //nozzle.isPartOnTest();
 	                   fireTextStatus("[%s] Picked %s from %s for %s.", fsm.getState(), part.getId(),
 	                		   feeder.getName(), placement.getId());
-	                   Logger.debug("Picked {} from {} with {}", part.getId(), feeder.getName(), nozzle);
+	                   Logger.debug("Picked {} from {} with {}", part.getId(), feeder.getName(), nozzle);	                   
+	          
+	          // Retract
+	                   nozzle.moveToSafeZ();
 	                   
 	          // feed after pick
 	                   if (feeder != null) {
 	                	   feeder.postPick(nozzle);
 	                   }
+	                   
+	     	  // Check whether the Part is On	                   
+	                   nozzle.isPartOnTest();//??? added to get this test after postPick actuation
+	                   
 	                   break;
 	           }
 	        catch (Exception e) {
@@ -982,7 +985,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 //Remove whole this section if works wrong and uncomment commented related section inReferenceNozzle pick(Part part)    
 
 //Issue: even if vision is not enabled for the part, the part will be taken to the camera position to perform isPartOn()
-//I don't have idea how to solve this weell (algorithm) so leave it as it - also because don't use vision disabled. 
+//I don't have idea how to solve this well (algorithm) so leave it as it - also because don't use vision disabled. 
 //To improve in future if required.            
             
             /* We need to know whether the part should be prerotated or not to bring the part with angle 
@@ -1025,7 +1028,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                 If not - we repeat the pick procedure.
                 */                  
                   Logger.debug("isPartOnTest to check whether the Part is still On the nozzle");
-                  fireTextStatus("Checking isPartOn over the Camera: %s (%s).", part.getId(), placement.getId());
+                  fireTextStatus("Checking isPartOn vacuum over the Camera: %s (%s).", part.getId(), placement.getId());
                   nozzle.isPartOnTest();
                   break;
                 }
@@ -1237,6 +1240,14 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 
             // Retract
             nozzle.moveToSafeZ(); //||
+            
+            // Vacuum On // TEST-VACUUM-CODE
+            //nozzle.actVacuumOn(); //pumpON to check in later procedure (prePickTest) if the part has not stayed on nozzle; 
+            						// it is moved to the subFeedAndPick just before moveTo feeder.getPickLocation()    
+            
+            // Testing whether the Nozzle is empty
+            //nozzle.isPartOffTest(); 	// commented as we don't want waste a time until the vacuum will grow if Nozzle is not empty
+            							// we will check it before the pick
             
             // Mark the placement as finished
             jobPlacement.status = Status.Complete;
