@@ -806,7 +806,9 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	                   }
 	                   
 	     	  // Check whether the Part is On	                   
-	                   nozzle.isPartOnTest();//??? added to get this test after postPick actuation
+	                   nozzle.isPartOnTest();	//??? added to get this test after postPick actuation
+	                   							// in fact it is only usable in case when the feeder pocket is empty
+	                   							// main and real checking is made at the Camera location (see in doAlign) 
 	                   
 	                   break;
 	           }
@@ -1027,7 +1029,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                 In fact, here we finalize picking procedure confirming whether the part was picked properly (isPartOnTest not returns exception).
                 If not - we repeat the pick procedure.
                 */                  
-                  Logger.debug("isPartOnTest to check whether the Part is still On the nozzle");
+                  Logger.debug("isPartOnTest to check whether the Part is still On the nozzle over the camera");
                   fireTextStatus("Checking isPartOn vacuum over the Camera: %s (%s).", part.getId(), placement.getId());
                   nozzle.isPartOnTest();
                   break;
