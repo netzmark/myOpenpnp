@@ -460,13 +460,14 @@ public class FeedersPanel extends JPanel implements WizardContainer {
                 Feeder feeder = getSelection();
                 Nozzle nozzle = MainFrame.get().getMachineControls().getSelectedNozzle();
                 nozzle.moveToSafeZ();
-                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
+                nozzle.actVacuumOn();// added instead of PICK_COMMAND gCode
                 feeder.feed(nozzle);
                 Location pickLocation = feeder.getPickLocation();
                 MovableUtils.moveToLocationAtSafeZ(nozzle, pickLocation);
                 nozzle.pick(feeder.getPart());
                 nozzle.moveToSafeZ();
                 feeder.postPick(nozzle);
+                Thread.sleep(100); // to let vacuum drop if the part is dropped
                 nozzle.isPartOnTest();//??? added to get this test after postPick actuation
             });
         }

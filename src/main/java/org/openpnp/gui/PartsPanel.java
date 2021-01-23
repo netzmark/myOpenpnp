@@ -361,14 +361,15 @@ public class PartsPanel extends JPanel implements WizardContainer {
                     throw new Exception("No valid feeder found for " + part.getId());
                 }
                 // feed the chosen feeder
+                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
                 feeder.feed(nozzle);
                 // pick the part
-                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
                 Location pickLocation = feeder.getPickLocation();
                 MovableUtils.moveToLocationAtSafeZ(nozzle, pickLocation);
                 nozzle.pick(part);
                 nozzle.moveToSafeZ();
                 feeder.postPick(nozzle);//??? added to get this test after postPick actuation
+                Thread.sleep(100); // to let vacuum drop if the part is dropped
                 nozzle.isPartOnTest();//??? added to get this test after postPick actuation
             });
         }

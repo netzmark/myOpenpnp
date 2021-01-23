@@ -777,7 +777,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	                   feeder.getName(), placement.getId());
 	                   Logger.debug("Attempt Pick {} from {} with {}.",
 	                   new Object[] {part, feeder, nozzle});
-	                   nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PumpON gcode)
+	                   nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PICK_COMMAND gCode)
 	          // Move to the pick location and check is Nozzle is clean
 	                   Logger.debug("move to the pick location");                  
 	                   //MovableUtils.moveToLocationAtSafeZ(nozzle, feeder.getPickLocation());

@@ -61,6 +61,7 @@ import org.openpnp.spi.HeadMountable;
 import org.openpnp.spi.Nozzle;
 import org.openpnp.spi.PnpJobProcessor;
 import org.openpnp.spi.PnpJobProcessor.JobPlacement;
+import org.openpnp.spi.base.AbstractPnpJobProcessor;
 import org.openpnp.util.MovableUtils;
 import org.openpnp.util.UiUtils;
 import org.openpnp.util.Utils2D;
@@ -597,22 +598,26 @@ public class JobPlacementsPanel extends JPanel {
                     throw new Exception("No valid feeder found for " + part.getId());
                 }
    
-                // move to the discard location
-                MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
-                                                                        .getMachine()
-                                                                        .getDiscardLocation());
                 // discard the part
-                Logger.debug("Discarding nozzle nozzle {}", nozzle.getName());
-                nozzle.place();
-                nozzle.moveToSafeZ();
-   
+//              Logger.debug("Discarding nozzle nozzle {}", nozzle.getName());
+//              MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
+//                                                                      .getMachine()
+//                                                                      .getDiscardLocation());
+//              nozzle.place(); //I don't use Abstract because don't want to check whether there is something picked up before
+//              nozzle.moveToSafeZ();
+                AbstractPnpJobProcessor.discard(nozzle);
+                
                 // feed the chosen feeder
+                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
                 feeder.feed(nozzle);
                 // pick the part
                 Location pickLocation = feeder.getPickLocation();
                 MovableUtils.moveToLocationAtSafeZ(nozzle, pickLocation);
                 nozzle.pick(part);
                 nozzle.moveToSafeZ();
+                feeder.postPick(nozzle);//??? added to get this test after postPick actuation
+                Thread.sleep(100); // to let vacuum drop if the part is dropped
+                nozzle.isPartOnTest();//??? added to get this test after postPick actuation
             });
         }
     };

@@ -742,16 +742,14 @@ public class JogControlsPanel extends JPanel {
         public void actionPerformed(ActionEvent arg0) {
             UiUtils.submitUiMachineTask(() -> {
                 Nozzle nozzle = machineControlsPanel.getSelectedNozzle();
-                // move to the discard location
-                MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
-                                                                        .getMachine()
-                                                                        .getDiscardLocation());
                 // discard the part
-
-                //AbstractPnpJobProcessor.discard(nozzle);
-                nozzle.place(); //I don't use Abstract because don't want to check whether there is something picked up before
-                //actVacuum = getHead().getMachine().getActuator(getId()+"_VAC")
-                nozzle.moveToSafeZ();
+//                Logger.debug("Discarding nozzle nozzle {}", nozzle.getName());
+//                MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
+//                														.getMachine()
+//                														.getDiscardLocation());
+//                nozzle.place(); //I don't use Abstract because don't want to check whether there is something picked up before
+//                nozzle.moveToSafeZ();
+                AbstractPnpJobProcessor.discard(nozzle);
             });
         }
     };
