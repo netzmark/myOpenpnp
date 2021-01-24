@@ -361,7 +361,7 @@ public class PartsPanel extends JPanel implements WizardContainer {
                     throw new Exception("No valid feeder found for " + part.getId());
                 }
                 // feed the chosen feeder
-                nozzle.actVacuumOn();// added instead of gcommand PUMP ON
+                nozzle.actVacuumOn();// added instead of PICK_COMMAND gCode
                 feeder.feed(nozzle);
                 // pick the part
                 Location pickLocation = feeder.getPickLocation();

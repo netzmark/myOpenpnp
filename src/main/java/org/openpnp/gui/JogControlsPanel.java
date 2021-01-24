@@ -750,6 +750,7 @@ public class JogControlsPanel extends JPanel {
 //                nozzle.place(); //I don't use Abstract because don't want to check whether there is something picked up before
 //                nozzle.moveToSafeZ();
                 AbstractPnpJobProcessor.discard(nozzle);
+                ReferenceNozzle.actVacuum.actuate(false);
             });
         }
     };

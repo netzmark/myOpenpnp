@@ -1030,7 +1030,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                 If not - we repeat the pick procedure.
                 */                  
                   Logger.debug("isPartOnTest to check whether the Part is still On the nozzle over the camera");
-                  fireTextStatus("Checking isPartOn vacuum over the Camera: %s (%s).", part.getId(), placement.getId());
+                  fireTextStatus("Checking isPartOn vacuum over the Camera: %s (%s) from Feeder %s.", part.getId(), placement.getId(), feeder.getName());
                   nozzle.isPartOnTest();
                   break;
                 }
