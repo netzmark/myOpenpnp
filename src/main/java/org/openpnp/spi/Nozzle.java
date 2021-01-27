@@ -42,10 +42,16 @@ public interface Nozzle
      * @throws Exception
      */
     
-    public void actVacuumOn() throws Exception; //TEST-VACUUM-CODE
+    public void actVacuumOn() throws Exception;
     
     /**
      * Commands to turn on the vacuum for the pointed nozzle
+     */	
+    
+    public void actVacuumOff() throws Exception;
+    
+    /**
+     * Commands to turn off the vacuum for the pointed nozzle
      */	
     
     public void pick(Part part) throws Exception;

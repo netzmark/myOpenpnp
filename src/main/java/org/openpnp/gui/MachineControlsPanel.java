@@ -314,22 +314,35 @@ public class MachineControlsPanel extends JPanel {
     public HomeAction homeAction = new HomeAction();
     
 	@SuppressWarnings("serial")
-    public Action vacOnAction = new AbstractAction("VAC ON") {
-
+    public Action vacOnAction = new AbstractAction("VAC SEL") {
+		boolean vacState = true;
+		
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	HeadMountable tool = getSelectedTool();
-        	Actuator actuator = tool.getHead().getActuatorByName("VAC");
-			 //Actuator actuator = tool.getNozzle().getActuatorByName("VAC");
- 			if (actuator!= null)
- 			{
- 				try {
-					actuator.actuate(true);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
- 			}
+        	UiUtils.submitUiMachineTask(() -> {
+        		Nozzle nozzle = getSelectedNozzle();     	
+        		if (vacState)	{
+        			nozzle.actVacuumOn();
+        			vacState = false;
+        		}
+        		else	{
+        			nozzle.actVacuumOff();	
+        			vacState = true;             	
+        		}
+            });
+        	
+//        	HeadMountable tool = getSelectedTool();
+//        	Actuator actuator = tool.getHead().getActuatorByName("VAC");
+//			 //Actuator actuator = tool.getNozzle().getActuatorByName("VAC");
+// 			if (actuator!= null) 
+// 			{
+// 				try {
+//					actuator.actuate(true);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+// 			}
         }
     };
     

@@ -78,8 +78,15 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
     public void actVacuumOn() throws Exception {
     	actVacuum = getHead().getMachine().getActuator(getId()+"_VAC");
         if (actVacuum != null) {
-        	Logger.debug("Turning on the Vacuum");
+        	Logger.debug("Turning the Vacuum ON");
         	actVacuum.actuate(true);
+        }
+    }
+    public void actVacuumOff() throws Exception {
+    	actVacuum = getHead().getMachine().getActuator(getId()+"_VAC");
+        if (actVacuum != null) {
+        	Logger.debug("Turning the Vacuum OFF");
+        	actVacuum.actuate(false);
         }
     }
 // TEST-VACUUM-CODE-END    
