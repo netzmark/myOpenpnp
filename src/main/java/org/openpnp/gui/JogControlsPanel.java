@@ -633,42 +633,6 @@ public class JogControlsPanel extends JPanel {
                               xofs, yofs, 0, 0))
                       .derive(null, null, null, null);
                 
-                
-//            //startLocation = startLocation.derive(220.0, 150.0, null, null);
-//              switch (nozzleName) {
-//              case "1": {
-//                  Location addedLocation = 
-//                      new Location(startLocation.getUnits(), camera.getXofs1(), camera.getYofs1(), 0, 0);
-//                  startLocation = startLocation.add(addedLocation)
-//                                          .derive(null, null, null, null);
-//                  Logger.debug("ARTUR cameraJogLocationN1 {}", startLocation);
-//              }
-//                  break;
-//              case "2": {
-//                  Location addedLocation = 
-//                      new Location(startLocation.getUnits(), camera.getXofs2(), camera.getYofs2(), 0, 0);
-//                  startLocation = startLocation.add(addedLocation)
-//                                      .derive(null, null, null, null);
-//                  Logger.debug("ARTUR cameraJogLocationN2 {}", startLocation);
-//              }
-//                  break;
-//              case "3": {
-//                  Location addedLocation = 
-//                      new Location(startLocation.getUnits(), camera.getXofs3(), camera.getYofs3(), 0, 0);
-//                  startLocation = startLocation.add(addedLocation)
-//                                      .derive(null, null, null, null);
-//              }
-//                  break;
-//              default: {
-//                  Location addedLocation = 
-//                      new Location(startLocation.getUnits(), 0, 0, 0, 0);
-//                  startLocation = startLocation.add(addedLocation)
-//                                      .derive(null, null, null, null);
-//                  Logger.debug("ARTUR cameraJogLocationDefault {}", startLocation);
-//              }
-//                  break;
-//          }                
-                
                 MovableUtils.moveToLocationAtSafeZ(nozzle, startLocation);
             });
          }
@@ -741,16 +705,19 @@ public class JogControlsPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             UiUtils.submitUiMachineTask(() -> {
-                Nozzle nozzle = machineControlsPanel.getSelectedNozzle();
                 // discard the part
-//                Logger.debug("Discarding nozzle nozzle {}", nozzle.getName());
-//                MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
-//                														.getMachine()
-//                														.getDiscardLocation());
-//                nozzle.place(); //I don't use Abstract because don't want to check whether there is something picked up before
-//                nozzle.moveToSafeZ();
-                AbstractPnpJobProcessor.discard(nozzle);
-                ReferenceNozzle.actVacuum.actuate(false);
+            	Nozzle nozzle = machineControlsPanel.getSelectedNozzle();
+                Logger.debug("Discarding nozzle nozzle {}", nozzle.getName());
+                MovableUtils.moveToLocationAtSafeZ(nozzle, Configuration.get()
+                														.getMachine()
+                														.getDiscardLocation());
+                nozzle.place();
+                nozzle.moveToSafeZ(); 
+                Thread.sleep(300);		//delay before the vacuum_on
+                nozzle.actVacuumOn();
+                Thread.sleep(150);		//to let vacuum grow if nozzle is not clean
+                nozzle.isPartOffTest(); // to check at discard location if nozzle is clean
+                nozzle.actVacuumOff();
             });
         }
     };
