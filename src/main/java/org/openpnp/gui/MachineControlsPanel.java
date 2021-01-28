@@ -315,19 +315,16 @@ public class MachineControlsPanel extends JPanel {
     
 	@SuppressWarnings("serial")
     public Action vacOnAction = new AbstractAction("VAC SEL") {
-		boolean vacState = true;
 		
         @Override
         public void actionPerformed(ActionEvent arg0) {
         	UiUtils.submitUiMachineTask(() -> {
-        		Nozzle nozzle = getSelectedNozzle();     	
-        		if (vacState)	{
+        		Nozzle nozzle = getSelectedNozzle();
+        		if (!nozzle.vacuumStatus())	{
         			nozzle.actVacuumOn();
-        			vacState = false;
         		}
         		else	{
         			nozzle.actVacuumOff();	
-        			vacState = true;             	
         		}
             });
         	
@@ -339,30 +336,41 @@ public class MachineControlsPanel extends JPanel {
 // 				try {
 //					actuator.actuate(true);
 //				} catch (Exception e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 // 			}
         }
     };
-    
+
     @SuppressWarnings("serial")
     public Action vacOffAction = new AbstractAction("VAC OFF") {
-        
+
         @Override
         public void actionPerformed(ActionEvent arg0) {
-        	HeadMountable tool = getSelectedNozzle();
-        	Actuator actuator = tool.getHead().getActuatorByName("VAC");
-			 //Actuator actuator = tool.getNozzle().getActuatorByName("VAC");
- 			if (actuator!= null)
- 			{
- 				try {
-					actuator.actuate(false);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
- 			}
+        	UiUtils.submitUiMachineTask(() -> {
+                Machine machine = configuration.getMachine();
+                for (Head head : machine.getHeads()) {
+                    for (Nozzle nozzle : head.getNozzles()) {
+                        try {
+        					nozzle.actVacuumOff();
+        				} catch (Exception e) {
+        					e.printStackTrace();
+        				}
+                    }
+                }
+            });
+        	
+//        	HeadMountable tool = getSelectedNozzle();
+//        	Actuator actuator = tool.getHead().getActuatorByName("VAC");
+//			 //Actuator actuator = tool.getNozzle().getActuatorByName("VAC");
+// 			if (actuator!= null)
+// 			{
+// 				try {
+//					actuator.actuate(false);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+// 			}
         }
     };
     
