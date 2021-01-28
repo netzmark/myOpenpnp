@@ -12,7 +12,15 @@ import org.openpnp.model.Part;
  */
 public interface Nozzle
         extends HeadMountable, WizardConfigurable, PropertySheetHolder {
-    /**
+
+	/**
+     * Get the Vacuum on/off status of the Nozzle
+     * 
+     * @return
+     */
+	boolean vacuumStatus();
+
+	/**
      * Get the NozzleTip currently attached to the Nozzle.
      * 
      * @return
@@ -33,6 +41,16 @@ public interface Nozzle
     public void isPartOnTest() throws Exception;
     
     /**
+     * Commands to turn on the vacuum for the pointed nozzle
+     */	    
+    public void actVacuumOn() throws Exception;
+
+    /**
+     * Commands to turn off the vacuum for the pointed nozzle
+     */	
+    public void actVacuumOff() throws Exception;
+
+    /**
      * Commands the Nozzle to perform it's pick operation. Generally this just consists of turning
      * on the vacuum. When this is called during job processing the processor will have already
      * positioned the nozzle over the part to be picked and lowered it to the correct height. Some
@@ -41,19 +59,6 @@ public interface Nozzle
      * 
      * @throws Exception
      */
-    
-    public void actVacuumOn() throws Exception;
-    
-    /**
-     * Commands to turn on the vacuum for the pointed nozzle
-     */	
-    
-    public void actVacuumOff() throws Exception;
-    
-    /**
-     * Commands to turn off the vacuum for the pointed nozzle
-     */	
-    
     public void pick(Part part) throws Exception;
 
     /**

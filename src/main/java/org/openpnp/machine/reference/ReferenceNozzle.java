@@ -73,23 +73,24 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
 
     protected ReferenceNozzleTip nozzleTip;
     
-// TEST-VACUUM-CODE
+    @Attribute(required = false)
+    protected boolean vstate;
+
     public static Actuator actVacuum;
     public void actVacuumOn() throws Exception {
     	actVacuum = getHead().getMachine().getActuator(getId()+"_VAC");
         if (actVacuum != null) {
-        	Logger.debug("Turning the Vacuum ON");
         	actVacuum.actuate(true);
+        	vstate=true;
         }
     }
     public void actVacuumOff() throws Exception {
     	actVacuum = getHead().getMachine().getActuator(getId()+"_VAC");
         if (actVacuum != null) {
-        	Logger.debug("Turning the Vacuum OFF");
         	actVacuum.actuate(false);
+        	vstate=false;
         }
     }
-// TEST-VACUUM-CODE-END    
 
     Actuator actDown; // Marek change: machine is faster, but need program restart if name changes.
     //Actuator actVacuum; // Marek change: machine is faster, but need program restart if name changes.
@@ -830,4 +831,9 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
     ReferenceMachine getMachine() {
         return (ReferenceMachine) Configuration.get().getMachine();
     }
+    
+	@Override
+	public boolean vacuumStatus() {
+		return vstate;
+	}
 }
