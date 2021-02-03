@@ -276,6 +276,9 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
                     else { break; }
                 }
             };
+            
+            Logger.debug("pickDwellTime after nozzle raising: {}ms", (getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds()));
+            Thread.sleep(this.getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds());
 
             //removed because raising the nozzle is made with moveToSafeZ in PnpJobProcessor, FeedersPanel and PartPanel
 //            if(actDown!=null) {
