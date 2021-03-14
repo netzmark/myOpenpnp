@@ -86,5 +86,7 @@ public interface Feeder extends Identifiable, Named, WizardConfigurable, Propert
     public boolean isAutoSkipAlign();
     
     public boolean isAutoSkipPick();
+
+	public void setLocation(Location location);
     
 }

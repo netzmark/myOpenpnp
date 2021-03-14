@@ -1087,6 +1087,38 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                             part,
                             boardLocation,
                             placement.getLocation(), nozzle);
+                        
+                        //// Feeder pickLocation auto-tuning ////
+
+//                      double x = plannedPlacement.alignmentOffsets.getLocation().getX();
+//                      double y = plannedPlacement.alignmentOffsets.getLocation().getY();                        
+//                      double minX = 0.1;                        
+//                      double maxX = 1.0;
+//                      double minY = 0.1;
+//                      double maxY = 1.0;
+//                      double corX = x / 2;
+//                      double corY = y / 2;
+//                      boolean shouldChange = false;
+//                      
+//                      if (Math.abs(x) > minX && Math.abs(x) < maxX) {
+//                      	x = +corX;
+//                      	shouldChange = true;
+//                      }
+//                      
+//                      if (Math.abs(y) > minY && Math.abs(y) < maxY) {
+//                      	y = +corY;
+//                      	shouldChange = true;
+//                      }
+//                      
+//                      if(shouldChange == true) {
+//                      	Location newLocation = feeder.getPickLocation();
+//                      	feeder.setLocation(new Location(LengthUnit.Millimeters, newLocation.getX()+x, newLocation.getY()+y, newLocation.getZ(), newLocation.getRotation()));
+//                      	Logger.debug("pick location has been changed for x={} and Y={}", corX, corY);
+//                      }
+//                      else {Logger.debug("pick location has not been changed");}
+                  
+                      //// END ////    
+
                         // My customization: store the actual corrected rotation instead of the offset for shared C axis
 //                        if (plannedPlacement.alignmentOffsets.getPreRotated()) {
 //                            plannedPlacement.alignmentOffsets = new PartAlignment.PartAlignmentOffset(plannedPlacement.alignmentOffsets.getLocation().derive(null,null,null,nozzle.getLocation().getRotation()),true);
