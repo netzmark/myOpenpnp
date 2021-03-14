@@ -277,7 +277,7 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
                 }
             };
             
-            Logger.debug("pickDwellTime after nozzle raising: {}ms", (getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds()));
+            Logger.debug("pickDwellTime before nozzle raising: {}ms", (getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds()));
             Thread.sleep(this.getPickDwellMilliseconds() + nozzleTip.getPickDwellMilliseconds());
 
             //removed because raising the nozzle is made with moveToSafeZ in PnpJobProcessor, FeedersPanel and PartPanel
@@ -384,7 +384,7 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
            };
     //vacuum sequence monitoring first loop ended
 
-               Logger.debug("placeDwellTime between checks: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
+               Logger.debug("placeDwellTime before nozzle raising: {}ms", (getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds()));
                Thread.sleep(this.getPlaceDwellMilliseconds() + nozzleTip.getPlaceDwellMilliseconds());
     
            

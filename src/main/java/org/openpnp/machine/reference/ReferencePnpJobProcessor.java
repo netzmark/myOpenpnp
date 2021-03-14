@@ -732,6 +732,8 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	               
     // Feed the part
 	               plannedPlacement.feeder = feeder;
+                   nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PICK_COMMAND gCode)
+                   Logger.debug("turn vacuum for {} on (before the feeding)", nozzle.getId());
 	               try {
 	                   // Try to feed the part. If it fails, retry the specified number of times
 	                   // before giving up.
@@ -739,19 +741,19 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	                       fireTextStatus("[%s] Feeding %s from %s for %s.", fsm.getState(), part.getId(),
 	                               feeder.getName(), placement.getId());
 	                               Logger.debug("Attempt Feed {} from {} with {}.",
-	                               new Object[] {part, feeder, nozzle});
+	                               new Object[] {part, feeder.getName(), nozzle});
 	
 	                       feeder.feed(nozzle);
 	                       fireTextStatus("[%s] Fed %s from %s for %s.", fsm.getState(), part.getId(),
 	                               feeder.getName(), placement.getId());
 	                       Logger.debug("Fed {} from {} with {}.",
-	                               new Object[] {part, feeder, nozzle});
+	                               new Object[] {part, feeder.getName(), nozzle});
 	                   });
 	                   break;
 	               }
 	               catch (Exception e) {
 	                   Logger.debug("Feed {} from {} with {} failed!",
-	                           new Object[] {part.getId(), feeder, nozzle});
+	                           new Object[] {part.getId(), feeder.getName(), nozzle});
 	                   if (feeder.isAutoSkipPick()){
 	                       makeSkip=true;
 	                   } 
@@ -777,9 +779,9 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 	                   feeder.getName(), placement.getId());
 	                   Logger.debug("Attempt Pick {} from {} with {}.",
 	                   new Object[] {part, feeder, nozzle});
-	                   nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PICK_COMMAND gCode)
+	                   //nozzle.actVacuumOn(); // it's instead of turn vacuum ON after Place (and instead of PICK_COMMAND gCode)
 	          // Move to the pick location and check is Nozzle is clean
-	                   Logger.debug("move to the pick location");                  
+	                   Logger.debug("move to the pick location");
 	                   //MovableUtils.moveToLocationAtSafeZ(nozzle, feeder.getPickLocation());
 	                   MovableUtils.moveToLocationAtSafeZ(nozzle, feeder.getPickLocation().derive(null, null, 0.0, null)); //move to pick location but don't low down nozzle at the destination
 	                   atCameraPosition = false;
@@ -1085,7 +1087,7 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                             part,
                             boardLocation,
                             placement.getLocation(), nozzle);
-//                        // My customization: store the actual corrected rotation instead of the offset for shared C axis
+                        // My customization: store the actual corrected rotation instead of the offset for shared C axis
 //                        if (plannedPlacement.alignmentOffsets.getPreRotated()) {
 //                            plannedPlacement.alignmentOffsets = new PartAlignment.PartAlignmentOffset(plannedPlacement.alignmentOffsets.getLocation().derive(null,null,null,nozzle.getLocation().getRotation()),true);
 //                        }
