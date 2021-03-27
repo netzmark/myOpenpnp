@@ -47,6 +47,7 @@ import org.openpnp.model.Location;
 import org.openpnp.model.Panel;
 import org.openpnp.model.Part;
 import org.openpnp.model.Placement;
+import org.openpnp.model.Point;
 import org.openpnp.spi.Actuator;
 import org.openpnp.spi.Camera;
 import org.openpnp.spi.Feeder;
@@ -1089,7 +1090,44 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                             placement.getLocation(), nozzle);
                         
                         //// Feeder pickLocation auto-tuning ////
-
+                        if (feeder.getRetryCount() == 10) {
+                        
+	                        double x = plannedPlacement.alignmentOffsets.getLocation().getX();
+	                        double y = plannedPlacement.alignmentOffsets.getLocation().getY();
+	                        Point p = new Point(x, y);
+	                        p = Utils2D.rotatePoint(p, -wantedRotation);
+	                        x=p.x;
+	                        y=p.y;
+	                      
+	                        double minX = 0.0;		//to gui                        
+	                        double maxX = 1.0;		//to gui
+	                        double minY = 0.0;		//to gui
+	                        double maxY = 1.0;		//to gui
+	                        double corX = x / 2;	//to gui
+	                        double corY = y / 2;	//to gui
+	                        boolean shouldChange = false;
+	                      
+	                        if (Math.abs(x) > minX && Math.abs(x) < maxX) {
+	                        	shouldChange = true;
+	                        }
+	                        else {corX = 0;}
+	                      
+	                        if (Math.abs(y) > minY && Math.abs(y) < maxY) {
+	                        	shouldChange = true;
+	                        }
+	                        else {corY = 0;}
+	                      
+	                        if(shouldChange == true) {
+	                        	Location newLocation = feeder.getPickLocation();
+	                        	feeder.setLocation(new Location(LengthUnit.Millimeters, newLocation.getX()+corX, newLocation.getY()+corY, newLocation.getZ(), newLocation.getRotation()));
+	                        	Logger.debug("pick location has been changed for x={} and Y={}", corX, corY);
+	                        }
+	                        else {Logger.debug("pick location has not been changed");
+	                        }
+                        }
+                  
+                      //// END ////    
+                        
 //                      double x = plannedPlacement.alignmentOffsets.getLocation().getX();
 //                      double y = plannedPlacement.alignmentOffsets.getLocation().getY();                        
 //                      double minX = 0.1;                        
@@ -1098,26 +1136,21 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 //                      double maxY = 1.0;
 //                      double corX = x / 2;
 //                      double corY = y / 2;
-//                      boolean shouldChange = false;
+//                      Location newLocation = feeder.getPickLocation();
 //                      
 //                      if (Math.abs(x) > minX && Math.abs(x) < maxX) {
-//                      	x = +corX;
-//                      	shouldChange = true;
+//                      	feeder.setLocation(new Location(LengthUnit.Millimeters, newLocation.getX()+corX, newLocation.getY(), newLocation.getZ(), newLocation.getRotation()));
+//                      	Logger.debug("pick location has been changed for x={}", corX);
 //                      }
 //                      
 //                      if (Math.abs(y) > minY && Math.abs(y) < maxY) {
-//                      	y = +corY;
-//                      	shouldChange = true;
+//                          	feeder.setLocation(new Location(LengthUnit.Millimeters, newLocation.getX(), newLocation.getY()+corY, newLocation.getZ(), newLocation.getRotation()));
+//                          	Logger.debug("pick location has been changed for Y={}", corY);
 //                      }
-//                      
-//                      if(shouldChange == true) {
-//                      	Location newLocation = feeder.getPickLocation();
-//                      	feeder.setLocation(new Location(LengthUnit.Millimeters, newLocation.getX()+x, newLocation.getY()+y, newLocation.getZ(), newLocation.getRotation()));
-//                      	Logger.debug("pick location has been changed for x={} and Y={}", corX, corY);
-//                      }
-//                      else {Logger.debug("pick location has not been changed");}
-                  
-                      //// END ////    
+                        
+                        //// END //// 
+                        
+                        
 
                         // My customization: store the actual corrected rotation instead of the offset for shared C axis
 //                        if (plannedPlacement.alignmentOffsets.getPreRotated()) {
