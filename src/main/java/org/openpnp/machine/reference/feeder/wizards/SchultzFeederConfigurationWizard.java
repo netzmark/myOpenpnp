@@ -149,7 +149,7 @@ public class SchultzFeederConfigurationWizard
 
         JLabel lblActuator = new JLabel("Actuator");
         panelActuator.add(lblActuator, "4, 4, left, default");
-
+/////////////////////	Get ID
         JLabel lblGetID = new JLabel("Get ID");
         panelActuator.add(lblGetID, "2, 6, right, default");
         
@@ -163,92 +163,92 @@ public class SchultzFeederConfigurationWizard
         idText = new JTextField();
         idText.setColumns(10);
         panelActuator.add(idText, "8, 6");
-        
+/////////////////////	Pre Pick
         JLabel lblFeed = new JLabel("Pre Pick");
-        panelActuator.add(lblFeed, "2, 8, right, default");
+        panelActuator.add(lblFeed, "2, 12, right, default");
         
         comboBoxFeedActuator = new JComboBox();
         comboBoxFeedActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxFeedActuator, "4, 8, fill, default");
+        panelActuator.add(comboBoxFeedActuator, "4, 12, fill, default");
         
         btnTestFeedActuator = new JButton(testFeedActuatorAction);
-        panelActuator.add(btnTestFeedActuator, "6, 8");
-
+        panelActuator.add(btnTestFeedActuator, "6, 12");
+/////////////////////	Post Pick
         JLabel lblPostPick = new JLabel("Post Pick");
-        panelActuator.add(lblPostPick, "2, 10, right, default");
+        panelActuator.add(lblPostPick, "2, 14, right, default");
         
         comboBoxPostPickActuator = new JComboBox();
         comboBoxPostPickActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxPostPickActuator, "4, 10, fill, default");
+        panelActuator.add(comboBoxPostPickActuator, "4, 14, fill, default");
         
         btnTestPostPickActuator = new JButton(testPostPickActuatorAction);
-        panelActuator.add(btnTestPostPickActuator, "6, 10");
-
+        panelActuator.add(btnTestPostPickActuator, "6, 14");
+/////////////////////	Get Feed Count
         JLabel lblFeedCount = new JLabel("Get Feed Count");
-        panelActuator.add(lblFeedCount, "2, 12, right, default");
+        panelActuator.add(lblFeedCount, "2, 18, right, default");
         
         comboBoxFeedCountActuator = new JComboBox();
         comboBoxFeedCountActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxFeedCountActuator, "4, 12, fill, default");
+        panelActuator.add(comboBoxFeedCountActuator, "4, 18, fill, default");
         
         btnGetFeedCountActuator = new JButton(getFeedCountActuatorAction);
-        panelActuator.add(btnGetFeedCountActuator, "6, 12");
+        panelActuator.add(btnGetFeedCountActuator, "6, 18");
 
         feedCountValue = new JTextField();
         feedCountValue.setColumns(8);
-        panelActuator.add(feedCountValue, "8, 12");
-        
+        panelActuator.add(feedCountValue, "8, 18");
+/////////////////////	Clear Feed Count
         JLabel lblClearCount = new JLabel("Clear Feed Count");
-        panelActuator.add(lblClearCount, "2, 14, right, default");
+        panelActuator.add(lblClearCount, "2, 20, right, default");
         
         comboBoxClearCountActuator = new JComboBox();
         comboBoxClearCountActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxClearCountActuator, "4, 14, fill, default");
+        panelActuator.add(comboBoxClearCountActuator, "4, 20, fill, default");
         
         btnClearCountActuator = new JButton(clearCountActuatorAction);
-        panelActuator.add(btnClearCountActuator, "6, 14");
-
+        panelActuator.add(btnClearCountActuator, "6, 20");
+/////////////////////	Get Pitch
         JLabel lblGetPitch = new JLabel("Get Pitch");
-        panelActuator.add(lblGetPitch, "2, 16, right, default");
+        panelActuator.add(lblGetPitch, "2, 8, right, default");
         
         comboBoxPitchActuator = new JComboBox();
         comboBoxPitchActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxPitchActuator, "4, 16, fill, default");
+        panelActuator.add(comboBoxPitchActuator, "4, 8, fill, default");
         
         btnPitchActuator = new JButton(pitchActuatorAction);
-        panelActuator.add(btnPitchActuator, "6, 16");
+        panelActuator.add(btnPitchActuator, "6, 8");
 
         pitchValue = new JTextField();
         pitchValue.setColumns(8);
-        panelActuator.add(pitchValue, "8, 16");
-        
+        panelActuator.add(pitchValue, "8, 8");
+/////////////////////	Toggle Pitch
         JLabel lblTogglePitch = new JLabel("Toggle Pitch");
-        panelActuator.add(lblTogglePitch, "2, 18, right, default");
+        panelActuator.add(lblTogglePitch, "2, 10, right, default");
         
         comboBoxTogglePitchActuator = new JComboBox();
         comboBoxTogglePitchActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxTogglePitchActuator, "4, 18, fill, default");
+        panelActuator.add(comboBoxTogglePitchActuator, "4, 10, fill, default");
         
         btnTogglePitchActuator = new JButton(togglePitchActuatorAction);
-        panelActuator.add(btnTogglePitchActuator, "6, 18");
+        panelActuator.add(btnTogglePitchActuator, "6, 10");
 
         JLabel lblTogglePitchDesc = new JLabel("Toggle between 2 MM and 4 MM");
-        panelActuator.add(lblTogglePitchDesc, "8, 18, left, default");
-        
+        panelActuator.add(lblTogglePitchDesc, "8, 10, left, default");
+/////////////////////	Get Status
         JLabel lblGetStatus = new JLabel("Get Status");
-        panelActuator.add(lblGetStatus, "2, 20, right, default");
+        panelActuator.add(lblGetStatus, "2, 16, right, default");
         
         comboBoxStatusActuator = new JComboBox();
         comboBoxStatusActuator.setModel(new ActuatorsComboBoxModel(Configuration.get().getMachine()));
-        panelActuator.add(comboBoxStatusActuator, "4, 20, fill, default");
+        panelActuator.add(comboBoxStatusActuator, "4, 16, fill, default");
         
         btnStatusActuator = new JButton(statusActuatorAction);
-        panelActuator.add(btnStatusActuator, "6, 20");
+        panelActuator.add(btnStatusActuator, "6, 16");
 
         statusText = new JTextField();
         statusText.setColumns(50);
-        panelActuator.add(statusText, "8, 20");
-        
+        panelActuator.add(statusText, "8, 16");
+/////////////////////	END
 		if(Configuration.get().getMachine().isEnabled()){
 			getIdActuatorAction.actionPerformed(null);
 			getFeedCountActuatorAction.actionPerformed(null);
