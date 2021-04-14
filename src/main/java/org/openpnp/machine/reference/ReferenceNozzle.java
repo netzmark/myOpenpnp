@@ -207,11 +207,9 @@ public class ReferenceNozzle extends AbstractNozzle implements ReferenceHeadMoun
         if (actuator != null) {
             ReferenceNozzleTip nt = getNozzleTip();
             double vacuumLevel;
-//            int times = 0;            
             
-            for (int times = 0; times < 20; times++) {
-//            while(times < 20) {
-//            	times++;
+            for (int times = 0; times <= 20; times++) {
+            	Logger.debug("vacuum probe counter: {}", times);
                 vacuumLevel = Double.parseDouble(actuator.read());
             
                 if (invertVacuumSenseLogic) {
